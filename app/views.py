@@ -34,7 +34,7 @@ def index(path):
 def upload():
     form = UploadForm()
 
-    if (request.method == 'POST');
+    if (request.method == 'POST'):
         if (form.validate_on_submit()):
             description = form.description.data
             photo = form.photo.data
