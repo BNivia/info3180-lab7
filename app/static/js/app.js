@@ -76,16 +76,15 @@ const upload_form = {
     template:`
         <h1>Upload Form</h1>
         <div>
-            <div class="alert alert-success" role="alert" v-if="on && success" v-for="message in messages">
-                    {{message}}
-            </div>
-            <div class="alert alert-danger" role="alert"  v-if="on && !success" >
-                <div v-for="message in messages">
-                    <li> {{message}}</li>
-                </div>
-            </div>
-
             <form @submit.prevent="uploadPhoto" id="uploadForm">
+                <div class="alert alert-success" role="alert" v-if="on && success" v-for="message in messages">
+                    {{message}}
+                </div>
+                <div class="alert alert-danger" role="alert"  v-if="on && !success" >
+                    <div v-for="message in messages">
+                        <li> {{message}}</li>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea name="description" class="form-control"></textarea>
@@ -119,7 +118,18 @@ const upload_form = {
             })
             .then(function (jsonResponse) {
                 // display a success message
-                console.log(jsonResponse);
+                console.log(jsonResponse.errors);
+                if (jsonResponse.errors ==undefined){
+                    console.log(jsonResponse)
+                    self.messages=[jsonResponse.message];
+                    self.on=true;
+                    self.success=true;
+                } else if (jsonResponse.errors !=undefined){
+                    console.log(jsonResponse)
+                    self.messages=[jsonResponse.message];
+                    self.on=true;
+                    self.success=false;
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -128,6 +138,9 @@ const upload_form = {
     },
     data() {
         return {
+            on: false,
+            success: false,
+            messages: []
         }
     }
 };
