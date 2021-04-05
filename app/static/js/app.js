@@ -119,12 +119,12 @@ const upload_form = {
             .then(function (jsonResponse) {
                 // display a success message
                 console.log(jsonResponse.errors);
-                if (jsonResponse.errors ==undefined){
+                if (jsonResponse.errors == undefined){
                     console.log(jsonResponse)
                     self.messages=[jsonResponse.message];
                     self.on=true;
                     self.success=true;
-                } else if (jsonResponse.errors !=undefined){
+                } else if (jsonResponse.errors != undefined){
                     console.log(jsonResponse)
                     self.messages=[jsonResponse.message];
                     self.on=true;
