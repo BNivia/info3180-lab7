@@ -1,5 +1,4 @@
 /* Add your Application JavaScript */
-// Instantiate our main Vue Instance
 const Home = {
     name: 'Home',
     template: `
@@ -47,6 +46,9 @@ app.component('app-header', {
           <li class="nav-item active">
             <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
           </li>
+          <li class="nav-item active">
+            <router-link class="nav-link" to="/upload">Upload<span class="sr-only">(current)</span></router-link>
+          </li>
         </ul>
       </div>
     </nav>
@@ -69,9 +71,10 @@ app.component('app-footer', {
     }
 });
 
-app.component('upload-form', {
+const upload_form = {
     name: 'UploadForm',
     template:`
+        <h1>Upload Form</h1>
         <div>
             <div class="alert alert-success" role="alert" v-if="on && success" v-for="message in messages">
                     {{message}}
@@ -83,11 +86,15 @@ app.component('upload-form', {
             </div>
 
             <form @submit.prevent="uploadPhoto" id="uploadForm">
-                <label for="description">Description</label>
-                <textarea name="description"></textarea>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" class="form-control"></textarea>
+                </div>
                 
-                <label for="photo">Photo</label>
-                <input name="photo" type="file">
+                <div class="form-group">
+                    <label for="photo">Photo</label>
+                    <input name="photo" class="form-control-file" type="file">
+                </div><br>
 
                 <button type=submit class="btn btn-primary">Submit</button>
             </form>
@@ -96,11 +103,16 @@ app.component('upload-form', {
     methods: {
         uploadPhoto: function(){
             self = this;
-            let form = document.getElementById('uploadForm');
             let uploadForm = document.getElementById('uploadForm');
+            let form_data = new FormData(uploadForm);
             
             fetch("/api/upload", {
-                method: "POST"
+                method: "POST",
+                body: form_data,
+                headers: {
+                    'X-CSRFToken': token
+                },
+                credentials: 'same-origin'
             })
             .then(function (response) {
                 return response.json();
@@ -116,18 +128,15 @@ app.component('upload-form', {
     },
     data() {
         return {
-            year: (new Date).getFullYear()
         }
     }
-})
-        
-
-
-// Define Routes
+};
+   
+//Define Routes
 const routes = [
     { path: "/", component: Home },
     // Put other routes here
-
+    { path:"/upload",component:upload_form},
     // This is a catch all route in case none of the above matches
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
 ];
@@ -138,5 +147,4 @@ const router = VueRouter.createRouter({
 });
 
 app.use(router);
-
 app.mount('#app');

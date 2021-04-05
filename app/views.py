@@ -8,6 +8,7 @@ import os
 from app import app
 from flask import render_template, request
 from app.forms import UploadForm
+from werkzeug.utils import secure_filename
 
 ###
 # Routing for your application.
@@ -42,9 +43,10 @@ def upload():
             filename = secure_filename(photo.filename)
             photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            return '{"message": "File Upload Successful"\
-                    "filename": "your-uploaded-file.jpg"\
-                    "description": "Some description for your image".}' % (photo.filename,description)
+            return '{\
+                    "message": "File Upload Successful",\
+                    "filename": "%s",\
+                    "description": "%s"}' % (photo.filename,description)
         return '{"errors": "%s"}' % form_errors(form)
 
 # Here we define a function to collect form errors from Flask-WTF
