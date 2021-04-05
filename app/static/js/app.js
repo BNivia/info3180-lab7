@@ -1,5 +1,30 @@
 /* Add your Application JavaScript */
 // Instantiate our main Vue Instance
+const Home = {
+    name: 'Home',
+    template: `
+    <div class="jumbotron">
+        <h1>Lab 7</h1>
+        <p class="lead">In this lab we will demonstrate VueJS working with Forms and Form Validation from Flask-WTF.</p>
+    </div>
+    `,
+    data() {
+        return {}
+    }
+};
+
+const NotFound = {
+    name: 'NotFound',
+    template: `
+    <div>
+        <h1>404 - Not Found</h1>
+    </div>
+    `,
+    data() {
+        return {}
+    }
+};
+
 const app = Vue.createApp({
     data() {
         return {
@@ -44,30 +69,59 @@ app.component('app-footer', {
     }
 });
 
-const Home = {
-    name: 'Home',
-    template: `
-    <div class="jumbotron">
-        <h1>Lab 7</h1>
-        <p class="lead">In this lab we will demonstrate VueJS working with Forms and Form Validation from Flask-WTF.</p>
-    </div>
-    `,
-    data() {
-        return {}
-    }
-};
+app.component('upload-form', {
+    name: 'UploadForm',
+    template:`
+        <div>
+            <div class="alert alert-success" role="alert" v-if="on && success" v-for="message in messages">
+                    {{message}}
+            </div>
+            <div class="alert alert-danger" role="alert"  v-if="on && !success" >
+                <div v-for="message in messages">
+                    <li> {{message}}</li>
+                </div>
+            </div>
 
-const NotFound = {
-    name: 'NotFound',
-    template: `
-    <div>
-        <h1>404 - Not Found</h1>
-    </div>
+            <form @submit.prevent="uploadPhoto" id="uploadForm">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+                
+                <label for="photo">Photo</label>
+                <input name="photo" type="file">
+
+                <button type=submit class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     `,
+    methods: {
+        uploadPhoto: function(){
+            self = this;
+            let form = document.getElementById('uploadForm');
+            let uploadForm = document.getElementById('uploadForm');
+            
+            fetch("/api/upload", {
+                method: "POST"
+            })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (jsonResponse) {
+                // display a success message
+                console.log(jsonResponse);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+    },
     data() {
-        return {}
+        return {
+            year: (new Date).getFullYear()
+        }
     }
-};
+})
+        
+
 
 // Define Routes
 const routes = [
